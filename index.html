@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        .d-flex {
+            display: flex;
+        }
+
+        .d-center {
+            justify-content: center;
+        }
+
+        #video-button {
+            position: absolute;
+            bottom: 10px;
+            right: calc(50% - 50px);
+            width: 100px;
+            height: 30px;
+        }
+
+        .play-button::after {
+            content: "Play";
+        }
+
+        .pause-button::after {
+            content: "Pause";
+        }
+
+        .player-container {
+            position: relative;
+            display: inline-block;
+            text-align: center;
+        }
+
+        #progress {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            background-color: #ddd;
+        }
+
+        #bar {
+            width: 1%;
+            height: 10px;
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="d-flex d-center">
+        <div class="player-container">
+            <image id="playerImage" width="640" height="360" />
+            <button class=" play-button" type="button" id="video-button"></button>
+            <div id="progress">
+                <div id="bar"></div>
+            </div>
+
+        </div>
+    </div>
+    <script src="./frame-player.js">
+    </script>
+    <script>
+        var videoButtonId = 'video-button';
+        window.addEventListener('DOMContentLoaded', ev => {
+            document.getElementById('video-button').addEventListener('click', onClickVideoButton);
+            document.getElementById('playerImage').addEventListener('click', onClickVideoButton);
+            document.getElementById('progress').addEventListener('click', onClickBar);
+        })
+
+        function toggleButtons(elem) {
+            elem.classList.toggle('play-button');
+            elem.classList.toggle('pause-button');
+        }
+
+        function onClickBar(ev) {
+            if (player.imagePieces == null || player.imagePieces.length <= 0) { return; }
+            let width = ev.currentTarget.offsetWidth;
+            let clickedWidth = ev.offsetX;
+
+            let targetFrame = Math.round((player.imagePieces.length / width) * clickedWidth);
+            player.seek(targetFrame);
+        }
+
+        function onClickVideoButton(ev) {
+            let target;
+            if (ev.currentTarget instanceof HTMLButtonElement && ev.currentTarget.id == videoButtonId) {
+                target = this;
+            } else {
+                target = document.getElementById(videoButtonId);
+            }
+
+            exec(target);
+        }
+
+        function exec(elem) {
+            toggleButtons(elem);
+
+            if (elem.classList.contains('play-button')) {
+                player.pause();
+            } else {
+                player.play();
+            }
+        }
+    </script>
+</body>
+
+</html>
